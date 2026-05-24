@@ -2,6 +2,7 @@ package org.laptanovich.multithreading.state.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.laptanovich.multithreading.entity.Port;
 import org.laptanovich.multithreading.entity.Ship;
 import org.laptanovich.multithreading.state.ShipState;
 
@@ -11,6 +12,15 @@ public class ProcessingState implements ShipState {
     @Override
     public void next(Ship ship) {
         logger.info("Ship {} is processing", ship.getId());
-        ship.setState(new CompletedState());
+        Port port = Port.getInstance();
+        try {
+            port.unload(ship);
+            port.load(ship);
+            port.release(ship);
+            ship.setState(new CompletedState());
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

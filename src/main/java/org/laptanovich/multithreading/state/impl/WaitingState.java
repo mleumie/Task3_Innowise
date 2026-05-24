@@ -2,6 +2,7 @@ package org.laptanovich.multithreading.state.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.laptanovich.multithreading.entity.Pier;
 import org.laptanovich.multithreading.entity.Port;
 import org.laptanovich.multithreading.entity.Ship;
 import org.laptanovich.multithreading.state.ShipState;
@@ -13,8 +14,10 @@ public class WaitingState implements ShipState {
     public void next(Ship ship) {
         Port port = Port.getInstance();
         try {
-            port.dock();
-            ship.setState();
+            logger.info("Ship {} is waiting", ship.getId());
+            Pier pier = port.dock(ship);
+            ship.setPier(pier);
+            ship.setState(new ProcessingState());
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
