@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,7 +44,7 @@ public class Port {
                 pierCondition.await();
             }
             Pier pier = availablePiers.pollFirst();
-            logger.info("Ship docked");
+            logger.info("Ship {} docked to {}", ship.getId(), pier);
             return pier;
         }
         finally {
@@ -73,6 +74,7 @@ public class Port {
             }
             warehouse.addAndGet(count);
             ship.unload(count);
+            TimeUnit.MILLISECONDS.sleep(100);
             warehouseCondition.signalAll();
         }
         finally {
@@ -89,6 +91,7 @@ public class Port {
             }
             warehouse.addAndGet(-count);
             ship.load(count);
+            TimeUnit.MILLISECONDS.sleep(100);
             warehouseCondition.signalAll();
         }
         finally {

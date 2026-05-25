@@ -2,6 +2,7 @@ package org.laptanovich.multithreading.entity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.laptanovich.multithreading.exception.CustomException;
 import org.laptanovich.multithreading.state.ShipState;
 import org.laptanovich.multithreading.state.impl.CompletedState;
 import org.laptanovich.multithreading.state.impl.CreatedState;
@@ -28,7 +29,7 @@ public class Ship implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() {
+    public Integer call() throws CustomException {
         logger.info("Ship {} started work", id);
         while (!(state instanceof CompletedState)) {
             state.next(this);
